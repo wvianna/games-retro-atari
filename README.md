@@ -8,13 +8,19 @@ Entusiastas de jogos retrô, preparem-se para uma viagem nostálgica! O **Atari 
 
 ### Portal
 
-![Home do portal](imagens/home.png)
+![Home do portal](media/home.png)
 
 ### Exemplos de jogos
 
 | Defender | Pitfall! |
 |:---:|:---:|
-| ![Defender](imagens/defender.png) | ![Pitfall!](imagens/pitfall.png) |
+| ![Defender](media/defender.png) | ![Pitfall!](media/pitfall.png) |
+
+### Vídeo de demonstração
+
+https://github.com/user-attachments/assets/games-retro-atari.mp4
+
+> Caso o vídeo não carregue acima, acesse diretamente: [media/games-retro-atari.mp4](media/games-retro-atari.mp4)
 
 ## Funcionalidades
 
