@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Atari Vault — 2600 Web Emulator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <!-- ── Header ─────────────────────────────────────────────── -->
+    <header class="site-header">
+      <div class="header-inner">
+        <h1 class="logo">
+          <span class="logo-atari">ATARI</span>
+          <span class="logo-vault">VAULT</span>
+        </h1>
+        <p class="tagline">2,106 classic games · play instantly in your browser</p>
+      </div>
+    </header>
+
+    <!-- ── Controls bar ───────────────────────────────────────── -->
+    <section class="controls-bar">
+      <div class="search-wrap">
+        <input
+          id="search-input"
+          type="search"
+          placeholder="Search games…"
+          autocomplete="off"
+          aria-label="Search ROMs"
+        />
+        <span class="search-icon">⌕</span>
+      </div>
+
+      <div class="filter-wrap">
+        <label for="filter-region">Region</label>
+        <select id="filter-region" aria-label="Filter by region">
+          <option value="">All</option>
+          <option value="NTSC">NTSC</option>
+          <option value="PAL">PAL</option>
+          <option value="SECAM">SECAM</option>
+        </select>
+
+        <label for="filter-year">Era</label>
+        <select id="filter-year" aria-label="Filter by era">
+          <option value="">All years</option>
+          <option value="1977-1979">1977 – 1979</option>
+          <option value="1980-1982">1980 – 1982</option>
+          <option value="1983-1985">1983 – 1985</option>
+          <option value="1986-1992">1986 – 1992</option>
+        </select>
+
+        <label class="checkbox-label">
+          <input id="filter-hide-hacks" type="checkbox" />
+          Hide hacks
+        </label>
+        <label class="checkbox-label">
+          <input id="filter-hide-proto" type="checkbox" />
+          Hide prototypes
+        </label>
+      </div>
+
+      <div class="count-badge">
+        <span id="rom-count">—</span> games
+      </div>
+
+      <div class="view-toggle" role="group" aria-label="View mode">
+        <button id="btn-grid-view" class="view-btn" title="Grid view" aria-pressed="false">⊞</button>
+        <button id="btn-list-view" class="view-btn view-btn--active" title="List view" aria-pressed="true">≡</button>
+      </div>
+    </section>
+
+    <!-- ── Game grid ──────────────────────────────────────────── -->
+    <main id="game-grid" class="game-grid" aria-live="polite">
+      <div class="loading-spinner" id="spinner">
+        <div class="crt-loader">
+          <span>LOADING</span>
+          <div class="crt-bar"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ── Emulator overlay ───────────────────────────────────── -->
+    <div id="emulator-overlay" class="emulator-overlay hidden" role="dialog" aria-modal="true" aria-label="Emulator">
+      <div class="emulator-container">
+        <div class="emulator-header">
+          <span id="emulator-title" class="emulator-game-title">—</span>
+          <div class="audio-controls">
+            <button id="btn-mute" class="emu-btn" title="Mute/Unmute">🔊</button>
+            <input id="volume-slider" type="range" min="0" max="100" value="80" aria-label="Volume" />
+            <span id="volume-display" class="volume-display">80%</span>
+          </div>
+          <div class="emulator-actions">
+            <button id="btn-save" class="emu-btn" title="Save State (F2)">💾 Save</button>
+            <button id="btn-load" class="emu-btn" title="Load State (F4)">📂 Load</button>
+            <button id="btn-fullscreen" class="emu-btn" title="Fullscreen (F11)">⛶ Full</button>
+            <button id="btn-close" class="emu-btn emu-btn--danger" title="Close (Esc)">✕ Close</button>
+          </div>
+        </div>
+
+        <!-- EmulatorJS mounts here -->
+        <div id="game-container">
+          <div id="game"></div>
+        </div>
+
+        <div class="controls-guide">
+          <div class="controls-section">
+            <span class="guide-label">🕹 Joystick</span>
+            <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd>
+            <span class="guide-sep">or</span>
+            <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>
+            <span class="guide-sep">Fire:</span>
+            <kbd>Space</kbd><span class="guide-sep">/</span><kbd>Z</kbd>
+          </div>
+          <div class="controls-section">
+            <span class="guide-label">⌨ Shortcuts</span>
+            <kbd>F2</kbd><span class="guide-sep">Save</span>
+            <kbd>F4</kbd><span class="guide-sep">Load</span>
+            <kbd>F11</kbd><span class="guide-sep">Fullscreen</span>
+            <kbd>Esc</kbd><span class="guide-sep">Exit</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Save-state notification ────────────────────────────── -->
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
