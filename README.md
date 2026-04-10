@@ -194,6 +194,81 @@ curl "http://localhost:3001/api/roms/search?q=pitfall"
 
 ---
 
+## Executar como serviço do sistema (systemd)
+
+Para manter o emulador sempre disponível na rede, crie um serviço systemd. Substitua `/home/SEU_USUARIO` e `SEU_USUARIO` pelo caminho real.
+
+### 1. Criar o arquivo de serviço
+
+```bash
+sudo nano /etc/systemd/system/atari-vault.service
+```
+
+Cole o conteúdo abaixo:
+
+```ini
+[Unit]
+Description=Atari Vault — Emulador Web Atari 2600
+After=network.target
+
+[Service]
+Type=simple
+User=SEU_USUARIO
+WorkingDirectory=/home/SEU_USUARIO/games-retro-atari
+ExecStart=/usr/bin/npm run dev
+Restart=on-failure
+RestartSec=5
+Environment=NODE_ENV=development
+
+[Install]
+WantedBy=multi-user.target
+```
+
+### 2. Ativar e iniciar o serviço
+
+```bash
+# Recarregar configurações do systemd
+sudo systemctl daemon-reload
+
+# Habilitar para iniciar automaticamente no boot
+sudo systemctl enable atari-vault
+
+# Iniciar agora
+sudo systemctl start atari-vault
+
+# Verificar status
+sudo systemctl status atari-vault
+```
+
+### 3. Consultar logs
+
+```bash
+journalctl -u atari-vault -f
+```
+
+### 4. Liberar a porta no firewall (se necessário)
+
+```bash
+# UFW (Ubuntu/Debian)
+sudo ufw allow 5173/tcp
+sudo ufw allow 3001/tcp
+
+# firewalld (Fedora/RHEL)
+sudo firewall-cmd --permanent --add-port=5173/tcp
+sudo firewall-cmd --permanent --add-port=3001/tcp
+sudo firewall-cmd --reload
+```
+
+Após iniciar, o portal estará acessível em qualquer dispositivo da rede:
+
+```
+http://<IP-DO-SERVIDOR>:5173
+```
+
+> O Vite já está configurado com `host: '0.0.0.0'` para escutar em todas as interfaces de rede.
+
+---
+
 ## Variáveis de ambiente
 
 | Variável | Padrão | Descrição |
