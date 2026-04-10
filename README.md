@@ -10,7 +10,7 @@ Browse e jogue mais de **2.100 jogos clássicos do Atari 2600** diretamente no n
 - 🔊 **Controle de áudio** — slider de volume e botão mute com estado salvo
 - 💾 **Save state** — salva/carrega progresso por jogo via IndexedDB
 - ⌨️ **Referência de controles** visível durante o jogo
-- 📐 **Resolução 800×600** — canvas fixo em alta definição
+- 📐 **Resolução 1600×1200** — canvas fixo em alta definição
 - 🕹️ Suporte a teclado e gamepads USB/Bluetooth (via Gamepad API do EmulatorJS)
 
 ---
@@ -166,7 +166,7 @@ curl "http://localhost:3001/api/roms/search?q=pitfall"
 | Ação | Teclado |
 |---|---|
 | Mover | `↑` `↓` `←` `→` ou `W` `A` `S` `D` |
-| Atirar / Acão | `Space` ou `Z` |
+| Atirar / Ação | `X` |
 | Salvar estado | `F2` |
 | Carregar estado | `F4` |
 | Tela cheia | `F11` |
