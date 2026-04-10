@@ -69,7 +69,7 @@
     Este jogo não possui uma ROM pública disponível no servidor padrão.
     Você pode carregar a ROM manualmente:
     <label style="display:inline-block;margin-top:8px;">
-      <button class="btn" onclick="document.getElementById('rom-upload').click()">📂 Carregar ROM (.a26 / .bin)</button>
+      <button class="btn" id="btn-rom-upload" aria-label="Carregar ROM localmente">📂 Carregar ROM (.a26 / .bin)</button>
       <input type="file" id="rom-upload" accept=".a26,.bin,.zip" style="display:none" />
     </label>
   </div>
@@ -172,20 +172,30 @@ if (!game) {
   document.head.appendChild(script);
 
   // ─── Manual ROM upload handler ────────────────────────────────────────
-  document.getElementById('rom-upload').addEventListener('change', function (e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const url = URL.createObjectURL(file);
-    // Re-launch emulator with local file
-    window.EJS_gameUrl = url;
-    const existingEmulator = document.querySelector('#game iframe, #game canvas');
-    if (existingEmulator) existingEmulator.remove();
-    // Reload emulator
-    const reloadScript = document.createElement('script');
-    reloadScript.src = 'https://cdn.emulatorjs.org/latest/data/loader.js';
-    document.head.appendChild(reloadScript);
-    document.getElementById('rom-note').style.display = 'none';
-  });
+  const romUploadInput = document.getElementById('rom-upload');
+  const btnRomUpload   = document.getElementById('btn-rom-upload');
+
+  if (btnRomUpload) {
+    btnRomUpload.addEventListener('click', () => romUploadInput.click());
+  }
+
+  if (romUploadInput) {
+    romUploadInput.addEventListener('change', function (e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const url = URL.createObjectURL(file);
+      // Re-launch emulator with local file
+      window.EJS_gameUrl = url;
+      // Remove all existing emulator elements to reset state
+      document.querySelectorAll('#game iframe, #game canvas, #game video').forEach(el => el.remove());
+      // Reload emulator
+      const reloadScript = document.createElement('script');
+      reloadScript.src = 'https://cdn.emulatorjs.org/latest/data/loader.js';
+      document.head.appendChild(reloadScript);
+      const note = document.getElementById('rom-note');
+      if (note) note.style.display = 'none';
+    });
+  }
 }
 </script>
 </body>

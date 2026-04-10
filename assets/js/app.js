@@ -123,7 +123,7 @@ function applyFilters() {
   const q = state.query.toLowerCase().trim();
 
   state.filtered = GAMES.filter(g => {
-    if (q && !g.title.toLowerCase().includes(q) && !g.developer.toLowerCase().includes(q)) return false;
+    if (q && !g.title.toLowerCase().includes(q) && !(g.developer || '').toLowerCase().includes(q)) return false;
     if (state.genre !== 'All' && g.genre !== state.genre) return false;
     if (state.region !== 'All' && (g.region || 'NTSC') !== state.region) return false;
     if (state.alpha) {
@@ -163,7 +163,8 @@ function renderResults() {
         <h3>Nenhum jogo encontrado</h3>
         <p>Tente outro filtro ou termo de busca.</p>
       </div>`;
-    document.getElementById('pagination').innerHTML = '';
+    const pag = document.getElementById('pagination');
+    if (pag) pag.innerHTML = '';
     return;
   }
 
@@ -174,6 +175,25 @@ function renderResults() {
     container.className = 'game-grid';
     container.innerHTML = pageGames.map(g => renderGridCard(g)).join('');
   }
+
+  // Event delegation for game cards and play buttons
+  container.onclick = e => {
+    const playBtn = e.target.closest('.play-btn-list');
+    if (playBtn) {
+      e.stopPropagation();
+      openGame(parseInt(playBtn.dataset.gameId, 10));
+      return;
+    }
+    const card = e.target.closest('[data-game-id]');
+    if (card) openGame(parseInt(card.dataset.gameId, 10));
+  };
+
+  container.onkeydown = e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      const card = e.target.closest('[data-game-id]');
+      if (card) { e.preventDefault(); openGame(parseInt(card.dataset.gameId, 10)); }
+    }
+  };
 
   renderPagination(pages);
   container.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -186,10 +206,10 @@ function renderGridCard(g) {
   const tag   = genreTag(g.genre);
   const badge = badgeHTML(g);
   return `
-    <div class="game-card" onclick="openGame(${g.id})" title="${esc(g.title)}">
+    <div class="game-card" role="button" tabindex="0" data-game-id="${g.id}" aria-label="Jogar ${esc(g.title)}" title="${esc(g.title)}">
       <div class="game-cover" style="background:${bg}">
         <span>${icon}</span>
-        <div class="play-overlay">▶</div>
+        <div class="play-overlay" aria-hidden="true">▶</div>
         ${badge}
       </div>
       <div class="game-info">
@@ -208,21 +228,21 @@ function renderListCard(g) {
   const tag  = genreTag(g.genre);
   const badge = badgeHTML(g);
   return `
-    <div class="game-card" onclick="openGame(${g.id})">
-      <div class="game-cover" style="background:${bg};font-size:22px;width:60px;min-width:60px;height:45px;border-radius:4px;aspect-ratio:unset;position:relative;">
+    <div class="game-card" role="button" tabindex="0" data-game-id="${g.id}" aria-label="Jogar ${esc(g.title)}">
+      <div class="game-cover" style="background:${bg};font-size:22px;width:60px;min-width:60px;height:45px;border-radius:4px;aspect-ratio:unset;position:relative;" aria-hidden="true">
         ${icon}
         ${badge}
       </div>
       <div class="game-info" style="flex:1;padding:0;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
         <div class="game-title" style="flex:1;min-width:120px;">${esc(g.title)}</div>
         <div class="game-meta" style="gap:16px;">
-          <span>${esc(g.developer)}</span>
+          <span>${esc(g.developer || '')}</span>
           <span>${g.year}</span>
           <span class="game-genre-tag ${tag}">${g.genre}</span>
           <span style="color:var(--text-muted)">${g.players}P</span>
         </div>
       </div>
-      <button class="play-btn-list" onclick="event.stopPropagation();openGame(${g.id})">▶ Jogar</button>
+      <button class="play-btn-list" data-game-id="${g.id}" aria-label="Jogar ${esc(g.title)}">▶ Jogar</button>
     </div>`;
 }
 
@@ -254,20 +274,26 @@ function renderPagination(pages) {
   const cur = state.page;
   let html = '';
 
-  html += `<button class="page-btn" ${cur===1?'disabled':''} onclick="goPage(${cur-1})">‹</button>`;
+  html += `<button class="page-btn" data-page="${cur-1}" ${cur===1?'disabled':''} aria-label="Página anterior">‹</button>`;
 
   const range = pageRange(cur, pages);
   let last = 0;
   range.forEach(p => {
-    if (p - last > 1) html += `<span class="page-info">…</span>`;
-    html += `<button class="page-btn${p===cur?' active':''}" onclick="goPage(${p})">${p}</button>`;
+    if (p - last > 1) html += `<span class="page-info" aria-hidden="true">…</span>`;
+    html += `<button class="page-btn${p===cur?' active':''}" data-page="${p}" aria-label="Página ${p}" aria-current="${p===cur?'page':'false'}">${p}</button>`;
     last = p;
   });
 
-  html += `<button class="page-btn" ${cur===pages?'disabled':''} onclick="goPage(${cur+1})">›</button>`;
-  html += `<span class="page-info">${cur} / ${pages}</span>`;
+  html += `<button class="page-btn" data-page="${cur+1}" ${cur===pages?'disabled':''} aria-label="Próxima página">›</button>`;
+  html += `<span class="page-info" aria-live="polite">${cur} / ${pages}</span>`;
 
   el.innerHTML = html;
+
+  // Event delegation for pagination buttons
+  el.onclick = e => {
+    const btn = e.target.closest('button[data-page]');
+    if (btn && !btn.disabled) goPage(parseInt(btn.dataset.page, 10));
+  };
 }
 
 function pageRange(cur, total) {
@@ -327,10 +353,14 @@ function setView(view, save = true) {
 function clearFilters() {
   state.query = ''; state.genre = 'All'; state.region = 'All';
   state.alpha = ''; state.yearMin = 0; state.yearMax = 9999; state.page = 1;
-  document.getElementById('search-input').value = '';
-  document.getElementById('genre-filter').value = 'All';
-  document.getElementById('region-filter').value = 'All';
-  document.getElementById('year-filter').value = 'All';
+  const si = document.getElementById('search-input');
+  const gf = document.getElementById('genre-filter');
+  const rf = document.getElementById('region-filter');
+  const yf = document.getElementById('year-filter');
+  if (si) si.value = '';
+  if (gf) gf.value = 'All';
+  if (rf) rf.value = 'All';
+  if (yf) yf.value = 'All';
   document.querySelectorAll('.alpha-btn').forEach(b => b.classList.remove('active'));
   applyFilters();
 }

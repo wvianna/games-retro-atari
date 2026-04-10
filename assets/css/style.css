@@ -268,6 +268,11 @@ body::after {
   position: relative;
 }
 
+.game-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 .game-card:hover {
   transform: translateY(-4px);
   border-color: var(--accent);
