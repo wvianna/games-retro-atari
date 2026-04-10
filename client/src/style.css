@@ -18,7 +18,7 @@
   --glow:       0 0 8px var(--accent), 0 0 24px rgba(0,229,255,0.25);
 }
 
-html { font-size: 16px; }
+html { font-size: 20px; }
 
 body {
   background: var(--bg);
@@ -341,7 +341,7 @@ select:focus { border-color: var(--accent); }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 .emulator-container {
-  width: min(860px, 96vw);
+  width: min(1700px, 96vw);
   background: var(--surface);
   border: 1px solid var(--accent);
   border-radius: 8px;
@@ -389,7 +389,7 @@ select:focus { border-color: var(--accent); }
 #game-container {
   position: relative;
   background: #000;
-  height: 600px;
+  height: 1200px;
   max-height: 90vh;
   display: flex;
   align-items: center;
@@ -402,8 +402,8 @@ select:focus { border-color: var(--accent); }
   display: block;
   margin: 0 auto;
   image-rendering: pixelated;
-  width: 800px !important;
-  height: 600px !important;
+  width: 1600px !important;
+  height: 1200px !important;
   max-width: 100%;
   max-height: 90vh;
 }

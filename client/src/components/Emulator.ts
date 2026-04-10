@@ -35,8 +35,8 @@ export function launchEmulator(rom: RomInfo, container: HTMLElement, volume = 80
   window.EJS_language    = 'en-US';
   window.EJS_volume      = muted ? 0 : volume / 100;
   window.EJS_muted       = muted;
-  window.EJS_width       = 800;
-  window.EJS_height      = 600;
+  window.EJS_width       = 1600;
+  window.EJS_height      = 1200;
   // Hide the built-in save/load buttons (we handle them ourselves via the overlay)
   window.EJS_Buttons = { saveState: false, loadState: false };
 
