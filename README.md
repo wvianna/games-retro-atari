@@ -1,6 +1,20 @@
 # Atari Vault — 2600 Web Emulator
 
-Browse e jogue mais de **2.100 jogos clássicos do Atari 2600** diretamente no navegador. O emulador roda totalmente no lado do cliente via [EmulatorJS](https://emulatorjs.org/) (WebAssembly), sem necessidade de plugins.
+Entusiastas de jogos retrô, preparem-se para uma viagem nostálgica! O **Atari Vault** é um emulador web que traz mais de **2.100 jogos clássicos do Atari 2600** diretamente para o seu navegador. Desenvolvido com a tecnologia de ponta do [EmulatorJS](https://emulatorjs.org/) (WebAssembly), este projeto permite que você jogue seus títulos favoritos sem a necessidade de instalar qualquer software adicional ou plugins.
+
+---
+
+## Screenshots
+
+### Portal
+
+![Home do portal](imagens/home.png)
+
+### Exemplos de jogos
+
+| Defender | Pitfall! |
+|:---:|:---:|
+| ![Defender](imagens/defender.png) | ![Pitfall!](imagens/pitfall.png) |
 
 ## Funcionalidades
 
