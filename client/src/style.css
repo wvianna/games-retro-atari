@@ -222,7 +222,7 @@ select:focus { border-color: var(--accent); }
   align-items: center;
   justify-content: center;
   font-family: var(--font-pixel);
-  font-size: 0.55rem;
+  font-size: 0.75rem;
   color: var(--accent2);
   text-align: center;
   padding: 0.5rem;
@@ -232,7 +232,7 @@ select:focus { border-color: var(--accent); }
 }
 
 .card-title {
-  font-size: 0.8rem;
+  font-size: 1.05rem;
   font-family: var(--font-mono);
   color: var(--text);
   white-space: nowrap;
@@ -247,8 +247,8 @@ select:focus { border-color: var(--accent); }
   flex-wrap: wrap;
 }
 .badge {
-  font-size: 0.62rem;
-  padding: 0.15rem 0.4rem;
+  font-size: 0.82rem;
+  padding: 0.2rem 0.5rem;
   border-radius: 3px;
   font-family: var(--font-mono);
 }
@@ -260,13 +260,13 @@ select:focus { border-color: var(--accent); }
 
 .card-play-btn {
   margin-top: auto;
-  padding: 0.45rem;
+  padding: 0.55rem;
   background: transparent;
   border: 1px solid var(--border);
   border-radius: 4px;
   color: var(--accent);
   font-family: var(--font-pixel);
-  font-size: 0.5rem;
+  font-size: 0.65rem;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
   letter-spacing: 0.05em;
@@ -538,7 +538,7 @@ kbd {
 }
 .game-card--list .card-title {
   flex: 1;
-  font-size: 0.85rem;
+  font-size: 1.1rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
