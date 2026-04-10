@@ -48,9 +48,29 @@ export function launchEmulator(rom: RomInfo, container: HTMLElement, volume = 80
 }
 
 export function teardownEmulator(container: HTMLElement): void {
+  // Stop audio immediately before removing anything
+  const ejs = (window as any).EJS_emulator;
+  if (ejs) {
+    try { ejs.gameManager?.setVolume?.(0); } catch (_) {}
+    try { ejs.pause?.(); } catch (_) {}
+    try { ejs.stop?.(); } catch (_) {}
+    // Close Web Audio context if accessible
+    try { ejs.gameManager?.audioContext?.close?.(); } catch (_) {}
+    try { (ejs as any).Module?.SDL2?.audioContext?.close?.(); } catch (_) {}
+  }
+
+  // Suspend any lingering AudioContext attached to the container
+  container.querySelectorAll('audio, video').forEach((el) => {
+    const media = el as HTMLMediaElement;
+    media.pause();
+    media.src = '';
+  });
+
   container.innerHTML = '';
   if (ejsLoaderScript) { ejsLoaderScript.remove(); ejsLoaderScript = null; }
+
   // Clean up globals
+  delete (window as any).EJS_emulator;
   delete window.EJS_player;
   delete window.EJS_core;
   delete window.EJS_gameUrl;
