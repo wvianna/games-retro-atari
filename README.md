@@ -55,8 +55,16 @@ cd games-retro-atari
 npm install
 ```
 
-> Os arquivos `.bin` das ROMs devem estar na pasta `ROMS/` na raiz do projeto.  
-> A coleção **ROM Hunter V18** já está incluída nesse repositório.
+> Os arquivos `.bin` das ROMs **não estão incluídos** no repositório (ignorados pelo `.gitignore`).  
+> Você deve obter sua própria coleção (ex: **ROM Hunter V18**) e copiar os arquivos `.bin` para a pasta `ROMS/` na raiz do projeto:
+>
+> ```
+> games-retro-atari/
+> └── ROMS/
+>     ├── Adventure (1980) (Atari).bin
+>     ├── Pitfall! (1982) (Activision).bin
+>     └── ...
+> ```
 
 ---
 
