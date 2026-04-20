@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jogar — Atari 2600</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <!-- EmulatorJS styles -->
+  <link rel="stylesheet" href="https://cdn.emulatorjs.org/latest/data/emulator.min.css" />
+  <style>
+    #game {
+      width: 100%;
+      max-width: 800px;
+      aspect-ratio: 4/3;
+    }
+
+    .emulator-loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+      color: #0f0;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      gap: 12px;
+      min-height: 200px;
+    }
+
+    .rom-note {
+      max-width: 800px;
+      width: 100%;
+      margin-top: 16px;
+      background: rgba(255,102,0,.08);
+      border: 1px solid rgba(255,102,0,.3);
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .rom-note strong { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════ HEADER ═══════════════════════════════ -->
+<header class="player-header">
+  <a class="btn btn-secondary" href="index.html" style="flex-shrink:0;" aria-label="Voltar à biblioteca">
+    ← Biblioteca
+  </a>
+
+  <div class="player-title" id="page-title">Carregando…</div>
+
+  <div class="player-meta" id="player-meta"></div>
+</header>
+
+<!-- ═══════════════════════════════════ EMULATOR ═════════════════════════════ -->
+<main class="emulator-wrap">
+
+  <!-- EmulatorJS mounts here -->
+  <div id="game"></div>
+
+  <div class="rom-note" id="rom-note" style="display:none;">
+    <strong>⚠️ ROM não encontrada.</strong>
+    Este jogo não possui uma ROM pública disponível no servidor padrão.
+    Você pode carregar a ROM manualmente:
+    <label style="display:inline-block;margin-top:8px;">
+      <button class="btn" id="btn-rom-upload" aria-label="Carregar ROM localmente">📂 Carregar ROM (.a26 / .bin)</button>
+      <input type="file" id="rom-upload" accept=".a26,.bin,.zip" style="display:none" />
+    </label>
+  </div>
+
+  <!-- Controls reference -->
+  <div class="controls-help">
+    <h3>🎮 Controles</h3>
+    <div class="controls-grid">
+      <div class="control-item"><kbd>←↑↓→</kbd> Movimento</div>
+      <div class="control-item"><kbd>Z</kbd> Botão de ação</div>
+      <div class="control-item"><kbd>X</kbd> Botão 2</div>
+      <div class="control-item"><kbd>Enter</kbd> Start / Select</div>
+      <div class="control-item"><kbd>F</kbd> Tela cheia</div>
+      <div class="control-item"><kbd>P</kbd> Pausar</div>
+      <div class="control-item"><kbd>M</kbd> Mudo</div>
+      <div class="control-item">🎮 Gamepad suportado</div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ═══════════════════════════════════ FOOTER ═══════════════════════════════ -->
+<footer class="site-footer">
+  Emulação via <a href="https://emulatorjs.org/" target="_blank" rel="noopener">EmulatorJS</a> (WebAssembly) · 100% client-side · Sem plugins
+</footer>
+
+<!-- Scripts -->
+<script src="assets/js/games.js"></script>
+<script>
+// ─── Read game ID from URL ────────────────────────────────────────────────
+const params = new URLSearchParams(window.location.search);
+const gameId = parseInt(params.get('id'), 10);
+const game   = GAMES.find(g => g.id === gameId);
+
+if (!game) {
+  document.getElementById('page-title').textContent = 'Jogo não encontrado';
+  document.querySelector('.emulator-wrap').innerHTML = `
+    <div style="text-align:center;padding:60px 24px;color:var(--text-muted)">
+      <div style="font-size:64px;margin-bottom:16px">🕹️</div>
+      <h2>Jogo não encontrado</h2>
+      <p style="margin:12px 0 20px">ID inválido ou jogo removido.</p>
+      <a href="index.html" class="btn">← Voltar à Biblioteca</a>
+    </div>`;
+} else {
+  // ─── Update UI ────────────────────────────────────────────────────────
+  document.title = `${game.title} — Atari 2600`;
+  document.getElementById('page-title').textContent = game.title;
+
+  const badges = [];
+  if (game.year) badges.push(`<span>${game.year}</span>`);
+  if (game.developer) badges.push(`<span>${game.developer}</span>`);
+  if (game.genre) badges.push(`<span>${game.genre}</span>`);
+  if (game.players) badges.push(`<span>${game.players} Jogador${game.players > 1 ? 'es' : ''}</span>`);
+  if (game.region) badges.push(`<span>${game.region}</span>`);
+  if (game.prototype) badges.push(`<span style="color:var(--red)">PROTOTYPE</span>`);
+  if (game.homebrew) badges.push(`<span style="color:var(--green)">HOMEBREW</span>`);
+  document.getElementById('player-meta').innerHTML = badges.join(' · ');
+
+  // ─── Build ROM URL ────────────────────────────────────────────────────
+  // Uses Internet Archive's public Atari 2600 ROM collection.
+  // The `rom` field contains the filename (No-Intro / GoodA26 naming).
+  const ROM_BASE = 'https://archive.org/download/atari-2600-roms/';
+  const romUrl   = ROM_BASE + encodeURIComponent(game.rom);
+
+  // ─── Launch EmulatorJS ────────────────────────────────────────────────
+  window.EJS_player        = '#game';
+  window.EJS_core          = 'atari2600';
+  window.EJS_gameUrl       = romUrl;
+  window.EJS_pathtodata    = 'https://cdn.emulatorjs.org/latest/data/';
+  window.EJS_startOnLoaded = true;
+  window.EJS_language      = 'pt-BR';
+  window.EJS_color         = '#ff6600';
+
+  // Callback when emulator is fully ready
+  window.EJS_onGameStart = function () {
+    console.log(`[Atari 2600] Jogo iniciado: ${game.title}`);
+    const note = document.getElementById('rom-note');
+    if (note) note.style.display = 'none';
+  };
+
+  // Handle ROM load failure
+  window.EJS_onLoadError = function (err) {
+    console.warn('[Atari 2600] Erro ao carregar ROM:', err);
+    const note = document.getElementById('rom-note');
+    if (note) note.style.display = 'block';
+  };
+
+  // Load EmulatorJS loader script
+  const script = document.createElement('script');
+  script.src = 'https://cdn.emulatorjs.org/latest/data/loader.js';
+  script.onerror = function () {
+    document.getElementById('game').innerHTML = `
+      <div class="emulator-loading" style="height:100%;min-height:300px;padding:24px;">
+        <span style="font-size:36px">⚠️</span>
+        <p>Não foi possível carregar o emulador.</p>
+        <p style="color:#888;font-size:12px">Verifique sua conexão e recarregue a página.</p>
+        <a href="index.html" style="color:#f60;text-decoration:none;margin-top:12px">← Voltar</a>
+      </div>`;
+  };
+  document.head.appendChild(script);
+
+  // ─── Manual ROM upload handler ────────────────────────────────────────
+  const romUploadInput = document.getElementById('rom-upload');
+  const btnRomUpload   = document.getElementById('btn-rom-upload');
+
+  if (btnRomUpload) {
+    btnRomUpload.addEventListener('click', () => romUploadInput.click());
+  }
+
+  if (romUploadInput) {
+    romUploadInput.addEventListener('change', function (e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const url = URL.createObjectURL(file);
+      // Re-launch emulator with local file
+      window.EJS_gameUrl = url;
+      // Remove all existing emulator elements to reset state
+      document.querySelectorAll('#game iframe, #game canvas, #game video').forEach(el => el.remove());
+      // Reload emulator
+      const reloadScript = document.createElement('script');
+      reloadScript.src = 'https://cdn.emulatorjs.org/latest/data/loader.js';
+      document.head.appendChild(reloadScript);
+      const note = document.getElementById('rom-note');
+      if (note) note.style.display = 'none';
+    });
+  }
+}
+</script>
+</body>
+</html>

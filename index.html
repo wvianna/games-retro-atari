@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Browse e jogue mais de 2.100 jogos clássicos do Atari 2600 diretamente no navegador." />
+  <title>Atari 2600 — Biblioteca de Jogos Clássicos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════ HEADER ═══════════════════════════════ -->
+<header class="site-header">
+  <a class="logo" href="index.html">
+    <div class="logo-icon">🕹️</div>
+    <div class="logo-text">
+      <span class="brand">ATARI 2600</span>
+      <span class="sub">Arcade Clássico</span>
+    </div>
+  </a>
+
+  <div class="header-stats">
+    <div class="stat-item">
+      <span class="stat-num" id="total-count">2150</span>
+      <span>Jogos</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">100%</span>
+      <span>Online</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">Free</span>
+      <span>Grátis</span>
+    </div>
+  </div>
+
+  <div class="header-search">
+    <input
+      class="search-input"
+      id="search-input"
+      type="search"
+      placeholder="Buscar jogo ou desenvolvedor…"
+      aria-label="Buscar jogo"
+      autocomplete="off"
+      spellcheck="false"
+    />
+    <button class="btn btn-secondary" id="btn-clear" title="Limpar filtros">✕</button>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════ TOOLBAR ══════════════════════════════ -->
+<nav class="toolbar" role="navigation" aria-label="Filtros">
+  <div class="filter-group">
+    <span class="filter-label">Gênero:</span>
+    <select class="filter-select" id="genre-filter" aria-label="Filtrar por gênero"></select>
+  </div>
+
+  <div class="filter-group">
+    <span class="filter-label">Região:</span>
+    <select class="filter-select" id="region-filter" aria-label="Filtrar por região"></select>
+  </div>
+
+  <div class="filter-group">
+    <span class="filter-label">Ano:</span>
+    <select class="filter-select" id="year-filter" aria-label="Filtrar por ano"></select>
+  </div>
+
+  <div class="filter-group" style="margin-left:auto;">
+    <span class="filter-label">A–Z:</span>
+    <div class="alpha-filter" id="alpha-filter" role="group" aria-label="Filtrar por letra"></div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════ MAIN ═════════════════════════════════ -->
+<main class="main" id="main-content" role="main">
+
+  <div class="results-bar">
+    <div class="results-count" id="results-count">Carregando…</div>
+    <div class="view-toggle">
+      <button class="view-btn active" id="btn-grid" title="Grade" aria-label="Visualização em grade">⊞</button>
+      <button class="view-btn" id="btn-list" title="Lista" aria-label="Visualização em lista">≡</button>
+    </div>
+  </div>
+
+  <!-- Game container: grid or list -->
+  <div class="game-grid" id="game-container" role="list" aria-label="Lista de jogos">
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Carregando biblioteca…</p>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" id="pagination" role="navigation" aria-label="Paginação"></div>
+
+</main>
+
+<!-- ═══════════════════════════════════ FOOTER ═══════════════════════════════ -->
+<footer class="site-footer">
+  <p>
+    🕹️ <strong>Atari 2600 Clássico</strong> — Mais de <strong>2.100 jogos</strong> rodando diretamente no navegador via
+    <a href="https://emulatorjs.org/" target="_blank" rel="noopener">EmulatorJS</a> (WebAssembly).
+    Nenhum plugin necessário.
+  </p>
+  <p style="margin-top:8px">
+    ROMs de domínio público · Emulação 100% client-side · Compatível com todos os navegadores modernos
+  </p>
+</footer>
+
+<!-- Scripts -->
+<script src="assets/js/games.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
