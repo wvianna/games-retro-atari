@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "node --watch src/index.js",
     "start": "node src/index.js",
-    "test": "node --experimental-vm-modules ../../node_modules/.bin/jest --runInBand"
+    "test": "node --experimental-vm-modules ../node_modules/.bin/jest --runInBand"
   },
   "dependencies": {
     "cors": "^2.8.5",

@@ -42,7 +42,8 @@ let catalogueCache = null;
 
 function buildCatalogue() {
   const files = fs.readdirSync(ROMS_DIR).filter((f) => f.toLowerCase().endsWith('.bin'));
-  catalogueCache = files.map((f) => ({ id: encodeURIComponent(f), ...parseRomName(f) }));
+  // Keep `id` as the raw filename; the client should `encodeURIComponent(id)` when building URLs
+  catalogueCache = files.map((f) => ({ id: f, ...parseRomName(f) }));
   return catalogueCache;
 }
 

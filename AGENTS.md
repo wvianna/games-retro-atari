@@ -134,7 +134,7 @@ O Vite proxeia `/api` → `http://localhost:3001` em dev (configurado em `client
 
 ```typescript
 interface RomInfo {
-  id:          string;   // encodeURIComponent(filename) — usado na URL /api/roms/:id
+  id:          string;   // nome do arquivo (raw). O cliente aplica encodeURIComponent(id) ao gerar /api/roms/:id
   title:       string;   // nome extraído do filename pelo romParser
   year:        number | null;
   publisher:   string;   // 'Unknown' quando não identificado
@@ -385,7 +385,7 @@ test: {
 
 4. **EJS_emulator disponível apenas após init** — `window.EJS_emulator` é `undefined` até o EmulatorJS terminar de carregar o core. Sempre fazer check `if (ejs)` antes de chamar métodos.
 
-5. **`id` da ROM é `encodeURIComponent(filename)`** — Para fazer a URL de streaming, usar `getRomUrl(rom.id)` que aplica `encodeURIComponent` adicional: `/api/roms/${encodeURIComponent(id)}`. O servidor decodifica com `decodeURIComponent`.
+5. **`id` da ROM é o `filename` bruto** — Ao construir a URL de streaming o cliente deve usar `encodeURIComponent(id)` (ex.: `/api/roms/${encodeURIComponent(id)}`); o servidor decodifica com `decodeURIComponent`.
 
 6. **Save state usa `[romId, slot]` como chave composta** — Ambos os campos são obrigatórios na chamada.
 
